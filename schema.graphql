@@ -1,0 +1,17 @@
+type Account @entity {
+  id: ID! # 账户地址
+  address: Bytes! # 账户地址（Bytes格式）
+  wbtcBalance: BigInt! # WBTC余额（以最小单位计算，通常是wei或satoshi）
+  lastUpdated: BigInt! # 最后更新时间戳
+}
+
+type Transfer @entity {
+  id: ID! # 交易ID
+  from: Account! # 发送方账户
+  to: Account! # 接收方账户
+  amount: BigInt! # 转账金额
+  timestamp: BigInt! # 交易时间戳
+  blockNumber: BigInt! # 区块号
+  transactionHash: Bytes! # 交易哈希
+}
+

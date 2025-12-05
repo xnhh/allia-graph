@@ -1,0 +1,20 @@
+{
+  "name": "allia-graph",
+  "version": "1.0.0",
+  "description": "The Graph subgraph for querying WBTC balances on Starknet Sepolia",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 allia-graph",
+    "create-local": "graph create --node http://localhost:8020/ allia-graph",
+    "remove-local": "graph remove --node http://localhost:8020/ allia-graph"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.60.0",
+    "@graphprotocol/graph-ts": "^0.32.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
+
