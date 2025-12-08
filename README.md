@@ -240,3 +240,7 @@ query GetAccountTransfers($accountId: ID!) {
 
 MIT
 
+## 未来规划
+
+增加goldsky适配
+
