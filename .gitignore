@@ -6,3 +6,5 @@ generated/
 .env
 dist/
 /data
+data/
+
