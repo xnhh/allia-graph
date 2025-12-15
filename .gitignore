@@ -5,4 +5,4 @@ generated/
 *.log
 .env
 dist/
-
+/data
