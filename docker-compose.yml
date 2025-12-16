@@ -33,7 +33,7 @@ services:
 
   # Graph Node 专用的 PostgreSQL 数据库
   postgres-graph:
-    image: postgres
+    image: postgres:17  # 指定版本以避免 18+ 的挂载点变更
     ports:
       - '5432:5432'
     command:
@@ -53,8 +53,9 @@ services:
       retries: 5
 
   # 独立的 PostgreSQL 数据库，用于存放自定义表
+  # 注意：如果使用 PostgreSQL 18+，需要将挂载点改为 /var/lib/postgresql
   postgres-custom:
-    image: postgres
+    image: postgres:17  # 指定版本以避免 18+ 的挂载点变更
     ports:
       - '5433:5432'
     environment:
