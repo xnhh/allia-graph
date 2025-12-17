@@ -52,23 +52,23 @@ services:
       timeout: 5s
       retries: 5
 
-  # 独立的 PostgreSQL 数据库，用于存放自定义表
+  # Starknet 合约管理数据库
   # 注意：如果使用 PostgreSQL 18+，需要将挂载点改为 /var/lib/postgresql
-  postgres-custom:
+  postgres-starknet:
     image: postgres:17  # 指定版本以避免 18+ 的挂载点变更
     ports:
       - '5433:5432'
     environment:
-      POSTGRES_USER: custom_user
-      POSTGRES_PASSWORD: custom_password
-      POSTGRES_DB: custom_db
+      POSTGRES_USER: starknet_user
+      POSTGRES_PASSWORD: starknet_password
+      POSTGRES_DB: starknet
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
-      - ./data/postgres-custom:/var/lib/postgresql/data
+      - ./data/postgres-starknet:/var/lib/postgresql/data
       # 可选：挂载初始化 SQL 脚本
-      - ./scripts/init-custom-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./scripts/starknet.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U custom_user -d custom_db"]
+      test: ["CMD-SHELL", "pg_isready -U starknet_user -d starknet"]
       interval: 10s
       timeout: 5s
       retries: 5

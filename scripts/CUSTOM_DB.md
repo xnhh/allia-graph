@@ -1,21 +1,21 @@
-# 自定义数据库使用说明
+# Starknet 数据库使用说明
 
 ## 概述
 
 项目现在包含两个独立的 PostgreSQL 数据库：
 
 1. **postgres-graph** (端口 5432) - Graph Node 专用数据库
-2. **postgres-custom** (端口 5433) - 自定义表数据库
+2. **postgres-starknet** (端口 5433) - Starknet 合约管理数据库
 
 ## 连接信息
 
-### 自定义数据库 (postgres-custom)
+### Starknet 数据库 (postgres-starknet)
 
-- **主机**: `localhost` (或 `postgres-custom` 在 Docker 网络内)
+- **主机**: `localhost` (或 `postgres-starknet` 在 Docker 网络内)
 - **端口**: `5433`
-- **数据库名**: `custom_db`
-- **用户名**: `custom_user`
-- **密码**: `custom_password`
+- **数据库名**: `starknet`
+- **用户名**: `starknet_user`
+- **密码**: `starknet_password`
 
 ### Graph Node 数据库 (postgres-graph)
 
@@ -30,8 +30,8 @@
 ### 使用 psql 命令行工具
 
 ```bash
-# 连接自定义数据库
-psql -h localhost -p 5433 -U custom_user -d custom_db
+# 连接 Starknet 数据库
+psql -h localhost -p 5433 -U starknet_user -d starknet
 
 # 连接 Graph Node 数据库
 psql -h localhost -p 5432 -U graph-node -d graph-node
@@ -40,8 +40,8 @@ psql -h localhost -p 5432 -U graph-node -d graph-node
 ### 使用连接字符串
 
 ```
-# 自定义数据库
-postgresql://custom_user:custom_password@localhost:5433/custom_db
+# Starknet 数据库
+postgresql://starknet_user:starknet_password@localhost:5433/starknet
 
 # Graph Node 数据库
 postgresql://graph-node:let-me-in@localhost:5432/graph-node
@@ -50,8 +50,8 @@ postgresql://graph-node:let-me-in@localhost:5432/graph-node
 ### 使用 Docker 连接
 
 ```bash
-# 连接自定义数据库
-docker exec -it allia-graph-postgres-custom-1 psql -U custom_user -d custom_db
+# 连接 Starknet 数据库
+docker exec -it allia-graph-postgres-starknet-1 psql -U starknet_user -d starknet
 
 # 连接 Graph Node 数据库
 docker exec -it allia-graph-postgres-graph-1 psql -U graph-node -d graph-node
@@ -131,18 +131,17 @@ const { Pool } = require('pg');
 const pool = new Pool({
   host: 'localhost',
   port: 5433,
-  database: 'custom_db',
-  user: 'custom_user',
-  password: 'custom_password',
+  database: 'starknet',
+  user: 'starknet_user',
+  password: 'starknet_password',
 });
 
 // 查询示例
-async function getConfig(key) {
+async function getContracts() {
   const result = await pool.query(
-    'SELECT value FROM custom_config WHERE key = $1',
-    [key]
+    'SELECT * FROM contracts ORDER BY created_at DESC'
   );
-  return result.rows[0]?.value;
+  return result.rows;
 }
 ```
 
@@ -154,23 +153,23 @@ import psycopg2
 conn = psycopg2.connect(
     host="localhost",
     port=5433,
-    database="custom_db",
-    user="custom_user",
-    password="custom_password"
+    database="starknet",
+    user="starknet_user",
+    password="starknet_password"
 )
 
 cursor = conn.cursor()
-cursor.execute("SELECT * FROM custom_config")
+cursor.execute("SELECT * FROM contracts")
 rows = cursor.fetchall()
 ```
 
 ## 注意事项
 
-1. **数据持久化**: 数据存储在 `./data/postgres-custom/` 目录中
-2. **备份**: 定期备份 `./data/postgres-custom/` 目录
+1. **数据持久化**: 数据存储在 `./data/postgres-starknet/` 目录中
+2. **备份**: 定期备份 `./data/postgres-starknet/` 目录
 3. **端口冲突**: 如果 5433 端口被占用，可以在 `docker-compose.yml` 中修改
 4. **安全性**: 生产环境请修改默认密码
-5. **独立运行**: 可以只启动自定义数据库: `docker-compose up -d postgres-custom`
+5. **独立运行**: 可以只启动 Starknet 数据库: `docker-compose up -d postgres-starknet`
 
 ## 启动服务
 
@@ -178,10 +177,10 @@ rows = cursor.fetchall()
 # 启动所有服务
 docker-compose up -d
 
-# 只启动自定义数据库
-docker-compose up -d postgres-custom
+# 只启动 Starknet 数据库
+docker-compose up -d postgres-starknet
 
 # 查看日志
-docker-compose logs -f postgres-custom
+docker-compose logs -f postgres-starknet
 ```
 

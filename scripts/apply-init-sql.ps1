@@ -4,21 +4,21 @@
 Write-Host "正在执行初始化 SQL 脚本..." -ForegroundColor Cyan
 
 # 检查容器是否运行
-$containerName = "allia-graph-postgres-custom-1"
+$containerName = "allia-graph-postgres-starknet-1"
 $containerExists = docker ps --format "{{.Names}}" | Select-String -Pattern $containerName
 
 if (-not $containerExists) {
-    Write-Host "错误: postgres-custom 容器未运行" -ForegroundColor Red
-    Write-Host "请先运行: docker-compose up -d postgres-custom" -ForegroundColor Yellow
+    Write-Host "错误: postgres-starknet 容器未运行" -ForegroundColor Red
+    Write-Host "请先运行: docker-compose up -d postgres-starknet" -ForegroundColor Yellow
     exit 1
 }
 
 # 获取脚本目录
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sqlFile = Join-Path $scriptDir "init-custom-db.sql"
+$sqlFile = Join-Path $scriptDir "starknet.sql"
 
 # 执行 SQL 脚本
-Get-Content $sqlFile | docker exec -i $containerName psql -U custom_user -d custom_db
+Get-Content $sqlFile | docker exec -i $containerName psql -U starknet_user -d starknet
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ SQL 脚本执行成功" -ForegroundColor Green
