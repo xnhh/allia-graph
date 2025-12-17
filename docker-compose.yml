@@ -65,8 +65,6 @@ services:
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
       - ./data/postgres-starknet:/var/lib/postgresql/data
-      # 可选：挂载初始化 SQL 脚本
-      - ./scripts/starknet.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U starknet_user -d starknet"]
       interval: 10s
